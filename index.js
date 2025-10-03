@@ -103,11 +103,9 @@ function calculate() {
       <tr><td>Water</td><td>${waterMl} ml</td></tr>
     </table>
 
-    <div class="pill">Fueling rate: <strong>1 g/kg/h</strong></div>
     <div class="pill">Total carbs: <strong>${Math.round(totalCarbs)}</strong> g</div>
     <div class="pill">Carbs/hour: <strong>${Math.round(carbsPerHour)}</strong> g/h</div>
     <div class="pill">Sodium total: <strong>${Math.round(naTotal)}</strong> mg</div>
-    <div class="pill">Sodium/hour: <strong>${Math.round(naTargetPerHour)}</strong> mg/h</div>
     <div class="pill">Estimated total volume: <strong>${totalVolumeMl}</strong> ml</div>
   `;
 
@@ -142,7 +140,10 @@ function calculate() {
     }
   });
 
- 
+  html += `</table></div>
+    <div class="small">DIY cost assumes ${DIY_CARBS_PER_GEL} g carbs per gel-equivalent for comparison only.</div>
+  `;
+
   document.getElementById('out').innerHTML = html;
 }
 
