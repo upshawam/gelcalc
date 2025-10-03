@@ -26,7 +26,7 @@ h1 {
 }
 
 h2 {
-  text-align: center;       /* center section headings */
+  text-align: center;
   margin-top: 20px;
   margin-bottom: 12px;
   font-size: 1.4rem;
@@ -34,33 +34,31 @@ h2 {
 }
 
 label {
-  display: block;
-  margin-top: 6px;
   font-size: 0.95rem;
   color: #94a3b8; /* slate-400 */
-  text-align: center;
+  margin-right: 6px;
 }
 
 .form-row {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  margin: 12px 0;
-  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+  flex-wrap: nowrap;   /* keep everything on one line */
 }
 
 /* Inputs and selects */
 input[type="number"], select {
-  font-size: 1rem;
-  width: auto;              /* shrink to fit content */
-  max-width: 6em;           /* cap width */
+  font-size: 0.95rem;
+  width: auto;
+  max-width: 6em;
   text-align: center;
-  padding: 6px 8px;         /* tighter for mobile */
-  border-radius: 8px;
+  padding: 4px 6px;         /* tighter for mobile */
+  border-radius: 6px;
   border: 1px solid #334155; /* slate-700 */
   background: #0b1220;
-  color: #f1f5f9;           /* slate-100 */
+  color: #f1f5f9;
 }
 
 /* Buttons */
@@ -69,7 +67,7 @@ input[type="number"], select {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  padding: 12px 22px;
+  padding: 10px 20px;
   border-radius: 10px;
   background: #22c55e; /* green-500 */
   color: #052e1c;
@@ -96,17 +94,17 @@ input[type="number"], select {
 /* Cost comparison container (centered) */
 .table-container {
   display: flex;
-  justify-content: center;   /* center table horizontally */
+  justify-content: center;
   margin-top: 12px;
-  overflow-x: auto;          /* safety for small screens */
+  overflow-x: auto;
 }
 
 /* Cost comparison table */
 .table {
   border-collapse: collapse;
-  margin: 0 auto;            /* center if narrower than container */
-  width: auto;               /* shrink to fit content */
-  max-width: 100%;           /* don’t exceed container width */
+  margin: 0 auto;
+  width: auto;
+  max-width: 100%;
   background: #0b1220;
   border-radius: 8px;
   overflow: hidden;
@@ -171,10 +169,15 @@ hr {
 
 /* Responsive tweaks */
 @media (max-width: 600px) {
-  .form-row { flex-direction: column; gap: 6px; }
-  input[type="number"], select { max-width: 100%; }
-  .recipe-table { width: 100%; max-width: none; font-size: 0.9rem; }
-  .table th, .table td { font-size: 0.95rem; padding: 8px; }
+  .form-row {
+    flex-wrap: wrap;       /* allow wrapping only if absolutely needed */
+    gap: 4px;
+  }
+  input[type="number"], select {
+    font-size: 0.9rem;
+    padding: 3px 5px;
+    max-width: 5em;
+  }
   h1 { font-size: 1.5rem; }
   h2 { font-size: 1.2rem; }
 }
