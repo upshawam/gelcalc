@@ -1,6 +1,5 @@
 const NA_TABLE = 390; // mg sodium per gram table salt
-const CITRIC   = 0.5; // g fixed
-const DEFAULT_FUELING = 1.0;   // g/kg/h (updated from 0.9)
+const DEFAULT_FUELING = 1.0;   // g/kg/h
 const DEFAULT_SODIUM  = 300;   // mg/h (halved from 600)
 
 // DIY gel assumptions
@@ -9,7 +8,7 @@ const DIY_COST_PER_GEL  = 0.32;
 
 // Commercial gels
 const PRODUCTS = [
-  { name: "DIY Gel (2:1 maltodextrin:fructose)", carbs: 30, cost: DIY_COST_PER_GEL },
+  { name: "DIY Gel", carbs: 30, cost: DIY_COST_PER_GEL },
   { name: "Precision Gels", carbs: 30, cost: 2.88 },
   { name: "Maurten GEL 100", carbs: 40, cost: 4.50 }
 ];
@@ -72,6 +71,9 @@ function calculate() {
   const malt = totalCarbs * (2/3);
   const fruc = totalCarbs * (1/3);
 
+  // Citric acid scaling (0.4 g per 100 g carbs)
+  const citric = totalCarbs * 0.004;
+
   // Sodium (halved target, table salt only)
   const naTargetPerHour = DEFAULT_SODIUM;
   const naTargetTotal = naTargetPerHour * durationH;
@@ -86,7 +88,7 @@ function calculate() {
     waterMl +
     (totalCarbs * VOL_PER_G_CARBS) +
     (tableG * VOL_PER_G_SALT) +
-    (CITRIC * VOL_PER_G_CITRIC)
+    (citric * VOL_PER_G_CITRIC)
   );
 
   // Build recipe + outputs
@@ -97,7 +99,7 @@ function calculate() {
       <tr><td>Maltodextrin</td><td>${malt.toFixed(0)} g</td></tr>
       <tr><td>Fructose</td><td>${fruc.toFixed(0)} g</td></tr>
       <tr><td>Table Salt</td><td>${tableG.toFixed(2)} g</td></tr>
-      <tr><td>Citric Acid</td><td>${CITRIC.toFixed(2)} g</td></tr>
+      <tr><td>Citric Acid</td><td>${citric.toFixed(2)} g</td></tr>
       <tr><td>Water</td><td>${waterMl} ml</td></tr>
     </table>
 
