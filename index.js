@@ -111,32 +111,38 @@ function calculate() {
     <div class="pill">Estimated total volume: <strong>${totalVolumeMl}</strong> ml</div>
   `;
 
-  // Cost comparison
+  // Cost comparison (simplified)
   html += `
     <h2>Cost comparison</h2>
-    <table class="table">
-      <tr><th>Product</th><th>Carbs/gel</th><th>Cost/gel</th><th>Equivalent cost</th></tr>
+    <div class="table-container">
+      <table class="table">
+        <tr><th>Product</th><th>Total activity cost</th></tr>
   `;
-
-  const gelsNeededDIY = Math.ceil(totalCarbs / DIY_CARBS_PER_GEL);
 
   PRODUCTS.forEach(p => {
     const gelsNeeded = Math.ceil(totalCarbs / p.carbs);
     const totalCost = gelsNeeded * p.cost;
-    html += `
-      <tr>
-        <td>${p.name}</td>
-        <td>${p.carbs} g</td>
-        <td>$${p.cost.toFixed(2)}</td>
-        <td>$${totalCost.toFixed(2)} (for ${gelsNeeded} gels)</td>
-      </tr>
-    `;
+
+    if (p.name === "DIY Gel") {
+      // Just show cost, no gel count
+      html += `
+        <tr>
+          <td>${p.name}</td>
+          <td>$${totalCost.toFixed(2)}</td>
+        </tr>
+      `;
+    } else {
+      // Show cost + gel count for commercial products
+      html += `
+        <tr>
+          <td>${p.name}</td>
+          <td>$${totalCost.toFixed(2)} (for ${gelsNeeded} gels)</td>
+        </tr>
+      `;
+    }
   });
 
-  html += `</table>
-    <div class="small">Assumes ${DIY_CARBS_PER_GEL} g carbs per DIY gel-equivalent. Estimated DIY gels needed: ${gelsNeededDIY}.</div>
-  `;
-
+ 
   document.getElementById('out').innerHTML = html;
 }
 
