@@ -25,6 +25,14 @@ h1 {
   text-align: center;
 }
 
+h2 {
+  text-align: center;       /* center section headings */
+  margin-top: 20px;
+  margin-bottom: 12px;
+  font-size: 1.4rem;
+  color: #f1f5f9;
+}
+
 label {
   display: block;
   margin-top: 6px;
@@ -48,11 +56,11 @@ input[type="number"], select {
   width: auto;              /* shrink to fit content */
   max-width: 6em;           /* cap width */
   text-align: center;
-  padding: 6px 8px;         /* smaller padding for mobile */
+  padding: 6px 8px;         /* tighter for mobile */
   border-radius: 8px;
   border: 1px solid #334155; /* slate-700 */
   background: #0b1220;
-  color: #f1f5f9; /* slate-100 */
+  color: #f1f5f9;           /* slate-100 */
 }
 
 /* Buttons */
@@ -85,35 +93,41 @@ input[type="number"], select {
 }
 .pill strong { color: #22c55e; }
 
-/* General table */
-.table {
-  width: 100%;
-  border-collapse: collapse;
+/* Cost comparison container (centered) */
+.table-container {
+  display: flex;
+  justify-content: center;   /* center table horizontally */
   margin-top: 12px;
-  display: block;          /* allow horizontal scroll */
-  overflow-x: auto;
-  white-space: nowrap;     /* prevent wrapping */
+  overflow-x: auto;          /* safety for small screens */
 }
+
+/* Cost comparison table */
+.table {
+  border-collapse: collapse;
+  margin: 0 auto;            /* center if narrower than container */
+  width: auto;               /* shrink to fit content */
+  max-width: 100%;           /* don’t exceed container width */
+  background: #0b1220;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
 .table th, .table td {
-  padding: 8px;
+  padding: 8px 12px;
   text-align: left;
-  white-space: nowrap;     /* keep each cell on one line */
+  border-bottom: 1px solid #334155;
 }
+
 .table th {
   background: #1e293b;
   color: #f1f5f9;
   font-weight: 600;
-  border-bottom: 1px solid #334155;
-}
-.table td { border-bottom: 1px solid #334155; }
-.table tr:nth-child(even) { background: #111827; }
-.table tr:hover { background: #1a2236; }
-.table td:nth-child(3), .table td:nth-child(4) {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
 }
 
-/* Compact recipe table */
+.table tr:nth-child(even) { background: #111827; }
+.table tr:hover { background: #1a2236; }
+
+/* Recipe table */
 .recipe-table {
   margin: 16px auto;
   width: auto;
@@ -124,18 +138,22 @@ input[type="number"], select {
   border-radius: 8px;
   overflow: hidden;
 }
+
 .recipe-table th, .recipe-table td {
   padding: 8px 14px;
   text-align: center;
   border-bottom: 1px solid #334155;
 }
+
 .recipe-table th {
   background: #1e293b;
   color: #f1f5f9;
   font-weight: 600;
 }
+
 .recipe-table tr:last-child td { border-bottom: none; }
 
+/* Small note text */
 .small {
   font-size: 0.85rem;
   color: #94a3b8;
@@ -156,6 +174,7 @@ hr {
   .form-row { flex-direction: column; gap: 6px; }
   input[type="number"], select { max-width: 100%; }
   .recipe-table { width: 100%; max-width: none; font-size: 0.9rem; }
-  .table th, .table td { font-size: 0.9rem; padding: 6px; }
+  .table th, .table td { font-size: 0.95rem; padding: 8px; }
   h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.2rem; }
 }
