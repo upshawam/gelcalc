@@ -63,7 +63,7 @@ label {
 
 /* Inputs */
 input[type="number"], select {
-  width: 90px;          /* slimmer than before */
+  width: 90px;
   font-size: 0.95rem;
   padding: 4px;
   text-align: center;
@@ -136,7 +136,7 @@ button:not(.clear-btn), .btn {
 
 /* Fueling Recipe header inside white box */
 .recipe-section h2 {
-  color: #111;                 /* darker text for contrast */
+  color: #111;
   margin-top: 0;
   margin-bottom: 12px;
   font-weight: 700;
@@ -145,7 +145,7 @@ button:not(.clear-btn), .btn {
 
 /* Recipe Table */
 .recipe-table {
-  width: auto;                 /* only as wide as content */
+  width: auto;
   margin: 0 auto;
   border-collapse: collapse;
 }
@@ -201,15 +201,21 @@ button:not(.clear-btn), .btn {
   margin-top: 8px;
 }
 
-/* Responsive */
+/* Responsive TEST */
 @media (max-width: 600px) {
+  body {
+    background: red !important;   /* TEST: should turn red on mobile */
+  }
+
   input[type="number"], select {
-    width: 75px;   /* shrink further on small screens */
-    font-size: 0.85rem;
+    width: 75px !important;       /* shrink inputs further */
+    font-size: 0.85rem !important;
   }
+
   #milesDecimal {
-    width: 50px;
+    width: 50px !important;       /* shrink decimal box */
   }
+
   .form-row {
     gap: 4px;
   }
