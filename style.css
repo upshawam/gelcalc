@@ -51,7 +51,7 @@ h1, h2 {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin: 8px 0;
   flex-wrap: nowrap;   /* keep everything on one line */
 }
@@ -61,11 +61,11 @@ label {
   color: #ccc;
 }
 
-/* Inputs */
+/* Inputs (default desktop sizing) */
 input[type="number"], select {
   width: 90px;
   font-size: 0.95rem;
-  padding: 4px;
+  padding: 6px;
   text-align: center;
   border-radius: 5px;
   border: 1px solid #444;
@@ -201,22 +201,25 @@ button:not(.clear-btn), .btn {
   margin-top: 8px;
 }
 
-/* Responsive TEST */
+/* Responsive: stretch inputs wider & taller on mobile */
 @media (max-width: 600px) {
-  body {
-    background: red !important;   /* TEST: should turn red on mobile */
+  .form-row {
+    gap: 6px;
   }
 
   input[type="number"], select {
-    width: 75px !important;       /* shrink inputs further */
-    font-size: 0.85rem !important;
+    flex: 1;                  /* stretch to fill row */
+    min-width: 0;
+    font-size: 1.1rem;        /* bigger text */
+    padding: 10px;            /* taller tap targets */
+    height: 44px;             /* consistent tall height */
   }
 
+  /* Whole vs decimal balance */
+  #milesWhole {
+    flex: 2;
+  }
   #milesDecimal {
-    width: 50px !important;       /* shrink decimal box */
-  }
-
-  .form-row {
-    gap: 4px;
+    flex: 1;
   }
 }
