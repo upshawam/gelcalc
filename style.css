@@ -53,7 +53,7 @@ h1, h2 {
   align-items: center;
   gap: 6px;
   margin: 8px 0;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;   /* keep everything on one line */
 }
 
 label {
@@ -63,14 +63,19 @@ label {
 
 /* Inputs */
 input[type="number"], select {
-  width: 110px;
-  font-size: 1rem;
-  padding: 5px;
+  width: 90px;          /* slimmer than before */
+  font-size: 0.95rem;
+  padding: 4px;
   text-align: center;
   border-radius: 5px;
   border: 1px solid #444;
   background: #121212;
   color: #f0f0f0;
+}
+
+/* Decimal miles box smaller */
+#milesDecimal {
+  width: 60px;
 }
 
 /* Buttons */
@@ -199,8 +204,11 @@ button:not(.clear-btn), .btn {
 /* Responsive */
 @media (max-width: 600px) {
   input[type="number"], select {
-    width: 85px;
-    font-size: 0.9rem;
+    width: 75px;   /* shrink further on small screens */
+    font-size: 0.85rem;
+  }
+  #milesDecimal {
+    width: 50px;
   }
   .form-row {
     gap: 4px;
