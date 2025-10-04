@@ -91,25 +91,32 @@ function calculate() {
     (citric * VOL_PER_G_CITRIC)
   );
 
-  // Build recipe + outputs
+  // Build recipe card (white box)
   let html = `
-    <hr>
-    <table class="recipe-table">
-      <tr><th>Ingredient</th><th>Amount</th></tr>
-      <tr><td>Maltodextrin</td><td>${malt.toFixed(0)} g</td></tr>
-      <tr><td>Fructose</td><td>${fruc.toFixed(0)} g</td></tr>
-      <tr><td>Table Salt</td><td>${tableG.toFixed(2)} g</td></tr>
-      <tr><td>Citric Acid</td><td>${citric.toFixed(2)} g</td></tr>
-      <tr><td>Water</td><td>${waterMl} ml</td></tr>
-    </table>
-
-    <div class="pill">Total carbs: <strong>${Math.round(totalCarbs)}</strong> g</div>
-    <div class="pill">Carbs/hour: <strong>${Math.round(carbsPerHour)}</strong> g/h</div>
-    <div class="pill">Sodium total: <strong>${Math.round(naTotal)}</strong> mg</div>
-    <div class="pill">Estimated total volume: <strong>${totalVolumeMl}</strong> ml</div>
+    <div class="recipe-section">
+      <h2>Fueling Recipe</h2>
+      <table class="recipe-table">
+        <tr><th>Ingredient</th><th>Amount</th></tr>
+        <tr><td>Maltodextrin</td><td>${malt.toFixed(0)} g</td></tr>
+        <tr><td>Fructose</td><td>${fruc.toFixed(0)} g</td></tr>
+        <tr><td>Table Salt</td><td>${tableG.toFixed(2)} g</td></tr>
+        <tr><td>Citric Acid</td><td>${citric.toFixed(2)} g</td></tr>
+        <tr><td>Water</td><td>${waterMl} ml</td></tr>
+      </table>
+    </div>
   `;
 
-  // Cost comparison (simplified)
+  // Pills container (outside the white box)
+  html += `
+    <div class="pills-container">
+      <div class="pill">Total carbs: <strong>${Math.round(totalCarbs)}</strong> g</div>
+      <div class="pill">Carbs/hour: <strong>${Math.round(carbsPerHour)}</strong> g/h</div>
+      <div class="pill">Sodium total: <strong>${Math.round(naTotal)}</strong> mg</div>
+      <div class="pill">Estimated total volume: <strong>${totalVolumeMl}</strong> ml</div>
+    </div>
+  `;
+
+  // Cost comparison
   html += `
     <h2>Cost comparison</h2>
     <div class="table-container">
@@ -122,7 +129,6 @@ function calculate() {
     const totalCost = gelsNeeded * p.cost;
 
     if (p.name === "DIY Gel") {
-      // Just show cost, no gel count
       html += `
         <tr>
           <td>${p.name}</td>
@@ -130,7 +136,6 @@ function calculate() {
         </tr>
       `;
     } else {
-      // Show cost + gel count for commercial products
       html += `
         <tr>
           <td>${p.name}</td>
