@@ -73,17 +73,28 @@ function calculate() {
     (citric * VOL_PER_G_CITRIC)
   );
 
-  // Build recipe card
+  // Build recipe card with aligned cart column
   let html = `
     <div class="recipe-section">
-      <h2>Fueling Recipe</h2>
       <table class="recipe-table">
-        <tr><th>Ingredient</th><th>Amount</th></tr>
-        <tr><td>Maltodextrin</td><td>${malt.toFixed(0)} g <a href="https://www.amazon.com/NOW-Nutrition-Maltodextrin-Absorption-Production/dp/B0013OUNRM" target="_blank" rel="noopener noreferrer" class="shop-link">🛒</a></td></tr>
-        <tr><td>Fructose</td><td>${fruc.toFixed(0)} g <a href="https://www.iherb.com/pr/now-foods-fructose-sweetener-3-lbs-1-361-g/7762" target="_blank" rel="noopener noreferrer" class="shop-link">🛒</a></td></tr>
-        <tr><td>Citric Acid</td><td>${citric.toFixed(2)} g <a href="https://www.amazon.com/Yerbero-Food-Grade-Versatile-Anhydrous-Preservative/dp/B0CWCCC8D3" target="_blank" rel="noopener noreferrer" class="shop-link">🛒</a></td></tr>
-        <tr><td>Table Salt</td><td>${tableG.toFixed(2)} g</td></tr>
-        <tr><td>Water</td><td>${waterMl} ml</td></tr>
+        <tr><th>Ingredient</th><th>Amount</th><th></th></tr>
+        <tr>
+          <td>Maltodextrin</td>
+          <td>${malt.toFixed(0)} g</td>
+          <td><a href="https://www.amazon.com/NOW-Nutrition-Maltodextrin-Absorption-Production/dp/B0013OUNRM" target="_blank" rel="noopener noreferrer" class="shop-link">🛒</a></td>
+        </tr>
+        <tr>
+          <td>Fructose</td>
+          <td>${fruc.toFixed(0)} g</td>
+          <td><a href="https://www.iherb.com/pr/now-foods-fructose-sweetener-3-lbs-1-361-g/7762" target="_blank" rel="noopener noreferrer" class="shop-link">🛒</a></td>
+        </tr>
+        <tr>
+          <td>Citric Acid</td>
+          <td>${citric.toFixed(2)} g</td>
+          <td><a href="https://www.amazon.com/Yerbero-Food-Grade-Versatile-Anhydrous-Preservative/dp/B0CWCCC8D3" target="_blank" rel="noopener noreferrer" class="shop-link">🛒</a></td>
+        </tr>
+        <tr><td>Table Salt</td><td>${tableG.toFixed(2)} g</td><td></td></tr>
+        <tr><td>Water</td><td>${waterMl} ml</td><td></td></tr>
       </table>
     </div>
     <div class="pills-container">
