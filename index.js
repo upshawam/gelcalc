@@ -1,14 +1,10 @@
+// Constants
 const NA_TABLE = 390; // mg sodium per gram table salt
 const DEFAULT_FUELING = 1.0;   // g/kg/h
-const DEFAULT_SODIUM  = 300;   // mg/h (halved from 600)
-
-// DIY gel assumptions
-const DIY_CARBS_PER_GEL = 30;
-const DIY_COST_PER_GEL  = 0.32;
 
 // Commercial gels
 const PRODUCTS = [
-  { name: "DIY Gel", carbs: 30, cost: DIY_COST_PER_GEL },
+  { name: "DIY Gel", carbs: 30, cost: 0.32 },
   { name: "Precision Gels", carbs: 30, cost: 2.88 },
   { name: "Maurten GEL 100", carbs: 40, cost: 4.50 }
 ];
@@ -17,6 +13,10 @@ const PRODUCTS = [
 const VOL_PER_G_CARBS = 0.62;
 const VOL_PER_G_SALT  = 0.35;
 const VOL_PER_G_CITRIC= 0.8;
+
+// Dilution + sodium targets
+const ML_PER_G_CARBS = 100 / 65; // 65 g carbs per 100 ml
+const NA_PER_30G = 300;          // mg sodium per 30 g carbs
 
 function asKg(weight, unit) {
   return unit === 'kg' ? weight : weight * 0.453592;
@@ -27,10 +27,8 @@ function buildPaceOptions() {
   for (let min = 6; min <= 15; min++) {
     for (let sec = 0; sec < 60; sec += 15) {
       const label = `${min}:${sec.toString().padStart(2,'0')}`;
-      const opt = document.createElement('option');
-      opt.value = min + sec/60; // pace in minutes per mile
-      opt.textContent = label;
-      paceSelect.appendChild(opt);
+      const opt = new Option(label, min + sec/60);
+      paceSelect.add(opt);
     }
   }
   paceSelect.value = 8; // default ~8:00/mi
@@ -39,18 +37,8 @@ function buildPaceOptions() {
 function buildDistanceOptions() {
   const whole = document.getElementById('milesWhole');
   const decimal = document.getElementById('milesDecimal');
-  for (let i = 1; i <= 100; i++) {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = i;
-    whole.appendChild(opt);
-  }
-  for (let d = 0; d <= 9; d++) {
-    const opt = document.createElement('option');
-    opt.value = d / 10;
-    opt.textContent = d;
-    decimal.appendChild(opt);
-  }
+  for (let i = 1; i <= 100; i++) whole.add(new Option(i, i));
+  for (let d = 0; d <= 9; d++) decimal.add(new Option(d, d/10));
   whole.value = 10;
   decimal.value = 0;
 }
@@ -60,9 +48,9 @@ function calculate() {
   const unit = document.getElementById('weightUnit').value;
   const kg = asKg(weight, unit);
 
-  const miles = parseInt(document.getElementById('milesWhole').value) +
-                parseFloat(document.getElementById('milesDecimal').value);
-  const pace = parseFloat(document.getElementById('pace').value); // minutes per mile
+  const miles = +document.getElementById('milesWhole').value +
+                +document.getElementById('milesDecimal').value;
+  const pace = parseFloat(document.getElementById('pace').value);
   const durationH = (miles * pace) / 60;
 
   // Carbs
@@ -70,20 +58,14 @@ function calculate() {
   const carbsPerHour = durationH > 0 ? totalCarbs / durationH : 0;
   const malt = totalCarbs * (2/3);
   const fruc = totalCarbs * (1/3);
-
-  // Citric acid scaling (0.4 g per 100 g carbs)
   const citric = totalCarbs * 0.004;
 
-  // Sodium (halved target, table salt only)
-  const naTargetPerHour = DEFAULT_SODIUM;
-  const naTargetTotal = naTargetPerHour * durationH;
+  // Sodium
+  const naTargetTotal = (totalCarbs / 30) * NA_PER_30G;
   const tableG = naTargetTotal / NA_TABLE;
-  const naTotal = tableG * NA_TABLE;
 
-  // Water heuristic
-  const waterMl = Math.round(110 + Math.max(0, totalCarbs - 120) * 0.2);
-
-  // Volume estimate
+  // Water + volume
+  const waterMl = Math.round(totalCarbs * ML_PER_G_CARBS);
   const totalVolumeMl = Math.round(
     waterMl +
     (totalCarbs * VOL_PER_G_CARBS) +
@@ -91,33 +73,25 @@ function calculate() {
     (citric * VOL_PER_G_CITRIC)
   );
 
-  // Build recipe card (white box)
+  // Build recipe card
   let html = `
     <div class="recipe-section">
       <h2>Fueling Recipe</h2>
       <table class="recipe-table">
         <tr><th>Ingredient</th><th>Amount</th></tr>
-        <tr><td>Maltodextrin</td><td>${malt.toFixed(0)} g</td></tr>
-        <tr><td>Fructose</td><td>${fruc.toFixed(0)} g</td></tr>
+        <tr><td>Maltodextrin</td><td>${malt.toFixed(0)} g <a href="https://www.amazon.com/NOW-Nutrition-Maltodextrin-Absorption-Production/dp/B0013OUNRM" target="_blank" rel="noopener noreferrer" class="shop-link">🛒</a></td></tr>
+        <tr><td>Fructose</td><td>${fruc.toFixed(0)} g <a href="https://www.iherb.com/pr/now-foods-fructose-sweetener-3-lbs-1-361-g/7762" target="_blank" rel="noopener noreferrer" class="shop-link">🛒</a></td></tr>
+        <tr><td>Citric Acid</td><td>${citric.toFixed(2)} g <a href="https://www.amazon.com/Yerbero-Food-Grade-Versatile-Anhydrous-Preservative/dp/B0CWCCC8D3" target="_blank" rel="noopener noreferrer" class="shop-link">🛒</a></td></tr>
         <tr><td>Table Salt</td><td>${tableG.toFixed(2)} g</td></tr>
-        <tr><td>Citric Acid</td><td>${citric.toFixed(2)} g</td></tr>
         <tr><td>Water</td><td>${waterMl} ml</td></tr>
       </table>
     </div>
-  `;
-
-  // Pills container (outside the white box)
-  html += `
     <div class="pills-container">
       <div class="pill">Total carbs: <strong>${Math.round(totalCarbs)}</strong> g</div>
       <div class="pill">Carbs/hour: <strong>${Math.round(carbsPerHour)}</strong> g/h</div>
-      <div class="pill">Sodium total: <strong>${Math.round(naTotal)}</strong> mg</div>
-      <div class="pill">Estimated total volume: <strong>${totalVolumeMl}</strong> ml</div>
+      <div class="pill">Sodium total: <strong>${Math.round(naTargetTotal)}</strong> mg</div>
+      <div class="pill">Final gel volume: <strong>${totalVolumeMl}</strong> ml</div>
     </div>
-  `;
-
-  // Cost comparison
-  html += `
     <h2>Cost comparison</h2>
     <div class="table-container">
       <table class="table">
@@ -127,28 +101,10 @@ function calculate() {
   PRODUCTS.forEach(p => {
     const gelsNeeded = Math.ceil(totalCarbs / p.carbs);
     const totalCost = gelsNeeded * p.cost;
-
-    if (p.name === "DIY Gel") {
-      html += `
-        <tr>
-          <td>${p.name}</td>
-          <td>$${totalCost.toFixed(2)}</td>
-        </tr>
-      `;
-    } else {
-      html += `
-        <tr>
-          <td>${p.name}</td>
-          <td>$${totalCost.toFixed(2)} (for ${gelsNeeded} gels)</td>
-        </tr>
-      `;
-    }
+    html += `<tr><td>${p.name}</td><td>$${totalCost.toFixed(2)}${p.name !== "DIY Gel" ? ` (for ${gelsNeeded} gels)` : ""}</td></tr>`;
   });
 
-  html += `</table></div>
-    <div class="small">DIY cost assumes ${DIY_CARBS_PER_GEL} g carbs per gel-equivalent for comparison only.</div>
-  `;
-
+  html += `</table></div>`;
   document.getElementById('out').innerHTML = html;
 }
 
