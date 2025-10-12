@@ -75,9 +75,18 @@ button:not(.clear-btn), .btn { background: #FFC107 !important; color: black !imp
 .recipe-table th { background: #e0e0e0; color: #111; font-weight: 600; }
 .recipe-table tr:last-child td { border-bottom: none; }
 
+/* Cart column alignment */
+.recipe-table td:last-child,
+.recipe-table th:last-child {
+  text-align: center;
+  width: 40px; /* keeps the cart column narrow */
+}
+
 /* Cart icon */
 .shop-link {
-  margin-left: 8px; text-decoration: none; font-size: 1em; color: #666;
+  text-decoration: none;
+  font-size: 1em;
+  color: #666;
 }
 .shop-link:hover { color: #FFC107; opacity: 0.9; }
 
