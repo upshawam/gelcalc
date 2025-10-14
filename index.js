@@ -1,3 +1,4 @@
+// your code goes here
 // Constants
 const NA_TABLE = 390; // mg sodium per gram table salt
 const DEFAULT_FUELING = 1.0;   // g/kg/h
@@ -96,6 +97,13 @@ function calculate() {
         <tr><td>Table Salt</td><td>${tableG.toFixed(2)} g</td><td></td></tr>
         <tr><td>Water</td><td>${waterMl} ml</td><td></td></tr>
       </table>
+
+      <!-- Why these ingredients link -->
+      <p class="small" style="margin-top:8px; text-align:center;">
+        <a href="README.md" target="_blank" rel="noopener noreferrer">
+          Why these ingredients?
+        </a>
+      </p>
     </div>
     <div class="pills-container">
       <div class="pill">Total carbs: <strong>${Math.round(totalCarbs)}</strong> g</div>
