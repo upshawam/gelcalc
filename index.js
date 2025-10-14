@@ -1,4 +1,3 @@
-// your code goes here
 // Constants
 const NA_TABLE = 390; // mg sodium per gram table salt
 const DEFAULT_FUELING = 1.0;   // g/kg/h
@@ -100,7 +99,7 @@ function calculate() {
 
       <!-- Why these ingredients link -->
       <p class="small" style="margin-top:8px; text-align:center;">
-        <a href="README.md" target="_blank" rel="noopener noreferrer">
+        <a href="ingredients.html" target="_blank" rel="noopener noreferrer">
           Why these ingredients?
         </a>
       </p>
