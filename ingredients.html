@@ -4,70 +4,70 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Why these ingredients – DIY Fueling Calculator</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <!-- GitHub-style Markdown CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css">
+
   <style>
-    /* Optional tweaks for readability */
-    .content p { margin: 0 0 12px; line-height: 1.5; }
-    .content h2, .content h3 { margin-top: 20px; }
-    .tagline { color: var(--text-muted, #aaa); font-size: 0.95em; }
-    .callout { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 8px; }
-    .back-link { display:inline-block; margin-bottom:16px; text-decoration:none; }
-    .back-link button { cursor:pointer; }
+    body {
+      background-color: #0d1117; /* match your dark theme */
+      color: #c9d1d9;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .markdown-body {
+      box-sizing: border-box;
+      min-width: 200px;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #161b22;
+      border-radius: 8px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      text-decoration: none;
+    }
+    .back-link button {
+      background: #238636;
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .back-link button:hover {
+      background: #2ea043;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card content">
+  <div class="markdown-body">
+    <!-- Back button -->
+    <a href="index.html" class="back-link">
+      <button>← Back to Calculator</button>
+    </a>
 
-      <!-- Back button -->
-      <a href="index.html" class="back-link">
-        <button class="btn">← Back to Calculator</button>
-      </a>
-
-      <h1>Why these ingredients</h1>
-      <p class="tagline">A quick, evidence‑based rationale for the DIY gel recipe used in the calculator.</p>
-
-      <hr />
-
-      <h2>Carbohydrates 2:1 ratio</h2>
-      <p>
-        <strong>Maltodextrin (2 parts):</strong> Fast‑absorbing glucose source that provides steady energy without being overly sweet. It forms the bulk of the fuel to keep the gel easy on the stomach.
-      </p>
-      <p>
-        <strong>Fructose (1 part):</strong> Uses a different intestinal transporter than glucose, allowing higher total carb uptake per hour with less GI distress. The 2:1 maltodextrin:fructose ratio is a widely used endurance sweet spot for efficient absorption.
-      </p>
-      <div class="callout">
-        <strong>Takeaway:</strong> The 2:1 split helps you absorb more carbs per hour with fewer stomach issues compared to single‑sugar gels.
-      </div>
-
-      <h2>Citric acid for palatability</h2>
-      <p>
-        <strong>Flavor balance:</strong> A very small amount adds gentle tartness that cuts sweetness and reduces palate fatigue over long efforts.
-      </p>
-      <p>
-        <strong>Acidity tuning:</strong> Helps keep the mixture’s acidity in a comfortable range without being harsh.
-      </p>
-
-      <h2>Sodium targeting</h2>
-      <p>
-        <strong>Why sodium matters:</strong> Replaces what you lose in sweat to support fluid balance, nerve signaling, and muscle function during prolonged efforts.
-      </p>
-      <p>
-        <strong>How the level is set:</strong> The calculator targets about 300 mg sodium per 30 g carbs. This ties sodium to your fueling load so longer or higher‑intensity efforts—where you consume more carbs—scale sodium accordingly.
-      </p>
-      <p>
-        <strong>What the math does:</strong> Total carbs → sodium target → table salt grams via a conversion of roughly 390 mg sodium per gram of table salt (NaCl). The output shows both total sodium and the table salt needed to reach it.
-      </p>
-      <div class="callout">
-        <strong>Adjusting for you:</strong> If you’re a very salty sweater or very light sweater, you may prefer to tweak the sodium target. Future versions will let you customize this within the app.
-      </div>
-
-      <hr />
-
-      <p class="tagline">
-        Want to go back? <a href="index.html">Return to the DIY Fueling Calculator</a>.
-      </p>
-    </div>
+    <!-- README.md content will be injected here -->
+    <div id="content">Loading...</div>
   </div>
+
+  <!-- Markdown renderer -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    // Fetch and render your README.md
+    fetch('README.md')
+      .then(res => res.text())
+      .then(md => {
+        document.getElementById('content').innerHTML = marked.parse(md);
+      })
+      .catch(err => {
+        document.getElementById('content').innerHTML = "<p>Could not load README.md</p>";
+        console.error(err);
+      });
+  </script>
 </body>
 </html>
