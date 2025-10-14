@@ -6,16 +6,24 @@
   <title>Why these ingredients – DIY Fueling Calculator</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Optional minor tweaks for readability */
+    /* Optional tweaks for readability */
     .content p { margin: 0 0 12px; line-height: 1.5; }
     .content h2, .content h3 { margin-top: 20px; }
     .tagline { color: var(--text-muted, #aaa); font-size: 0.95em; }
     .callout { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 8px; }
+    .back-link { display:inline-block; margin-bottom:16px; text-decoration:none; }
+    .back-link button { cursor:pointer; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="card content">
+
+      <!-- Back button -->
+      <a href="index.html" class="back-link">
+        <button class="btn">← Back to Calculator</button>
+      </a>
+
       <h1>Why these ingredients</h1>
       <p class="tagline">A quick, evidence‑based rationale for the DIY gel recipe used in the calculator.</p>
 
