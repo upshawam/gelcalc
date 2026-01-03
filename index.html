@@ -11,26 +11,78 @@
     <div class="card">
       <h1>DIY Fueling Calculator</h1>
 
-      <!-- Core inputs -->
+      <!-- Mode Selector -->
       <div class="form-row">
-        <label for="weight">Body weight</label>
-        <input id="weight" type="number" placeholder="170" />
-        <select id="weightUnit">
-          <option value="lb" selected>lb</option>
-          <option value="kg">kg</option>
+        <label>Mode:</label>
+        <select id="mode" onchange="onModeChange()">
+          <option value="single">Single</option>
+          <option value="shared">Shared</option>
         </select>
       </div>
 
-      <div class="form-row">
-        <label for="milesWhole">Distance (miles)</label>
-        <select id="milesWhole"></select>
-        <span>.</span>
-        <select id="milesDecimal"></select>
+      <!-- Single Athlete Mode -->
+      <div id="singleMode" class="mode-section">
+        <div class="form-row">
+          <label for="carbsPerHourSingle">Target carbs/hour (g/hr)</label>
+          <select id="carbsPerHourSingle"></select>
+        </div>
+
+        <div class="form-row">
+          <label for="milesWhole">Distance (miles)</label>
+          <select id="milesWhole"></select>
+          <span>.</span>
+          <select id="milesDecimal"></select>
+        </div>
+
+        <div class="form-row">
+          <label for="pace">Pace (min/mi)</label>
+          <select id="pace"></select>
+        </div>
       </div>
 
-      <div class="form-row">
-        <label for="pace">Pace (min/mi)</label>
-        <select id="pace"></select>
+      <!-- Shared Batch Mode -->
+      <div id="sharedMode" class="mode-section" style="display:none;">
+        <div class="athlete-section">
+          <h3>Athlete A (Aaron)</h3>
+          <div class="form-row">
+            <label>Distance (miles)</label>
+            <select id="milesWholeA"></select>
+            <span>.</span>
+            <select id="milesDecimalA"></select>
+          </div>
+          <div class="form-row">
+            <label>Pace (min/mi)</label>
+            <select id="paceA"></select>
+          </div>
+          <div class="form-row">
+            <label>Target carbs/hour (g/hr)</label>
+            <select id="carbsPerHourA"></select>
+          </div>
+          <div class="form-row">
+            <button class="preset-btn" onclick="setPresetA(85)">Aaron Preset (85 g/hr)</button>
+          </div>
+        </div>
+
+        <div class="athlete-section">
+          <h3>Athlete B (Kristin)</h3>
+          <div class="form-row">
+            <label>Distance (miles)</label>
+            <select id="milesWholeB"></select>
+            <span>.</span>
+            <select id="milesDecimalB"></select>
+          </div>
+          <div class="form-row">
+            <label>Pace (min/mi)</label>
+            <select id="paceB"></select>
+          </div>
+          <div class="form-row">
+            <label>Target carbs/hour (g/hr)</label>
+            <select id="carbsPerHourB"></select>
+          </div>
+          <div class="form-row">
+            <button class="preset-btn" onclick="setPresetB(75)">Kristin Preset (75 g/hr)</button>
+          </div>
+        </div>
       </div>
 
       <button class="btn" onclick="calculate()">Calculate</button>
@@ -41,6 +93,6 @@
   </div>
 
   <!-- Add a version string to force browsers to fetch the latest file -->
-  <script src="index.js?v=1.0.0"></script>
+  <script src="index.js?v=1.0.2"></script>
 </body>
 </html>

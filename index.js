@@ -1,6 +1,6 @@
 // Constants
 const NA_TABLE = 390; // mg sodium per gram table salt
-const DEFAULT_FUELING = 1.0;   // g/kg/h
+const DEFAULT_FUELING = 1.0;   // g/kg/h (fallback, not used in new mode)
 
 // Commercial gels
 const PRODUCTS = [
@@ -18,12 +18,44 @@ const VOL_PER_G_CITRIC= 0.8;
 const ML_PER_G_CARBS = 100 / 65; // 65 g carbs per 100 ml
 const NA_PER_30G = 300;          // mg sodium per 30 g carbs
 
-function asKg(weight, unit) {
-  return unit === 'kg' ? weight : weight * 0.453592;
+// Gut-training preset options (5g intervals)
+const GUT_TRAINING_OPTIONS = [60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120];
+
+function onModeChange() {
+  const mode = document.getElementById('mode').value;
+  document.getElementById('singleMode').style.display = mode === 'single' ? 'block' : 'none';
+  document.getElementById('sharedMode').style.display = mode === 'shared' ? 'block' : 'none';
+  calculate();
 }
 
-function buildPaceOptions() {
-  const paceSelect = document.getElementById('pace');
+function setPresetA(carbs) {
+  document.getElementById('carbsPerHourA').value = carbs;
+  calculate();
+}
+
+function setPresetB(carbs) {
+  document.getElementById('carbsPerHourB').value = carbs;
+  calculate();
+}
+
+function buildCarbsPerHourOptions() {
+  const selectIds = ['carbsPerHourSingle', 'carbsPerHourA', 'carbsPerHourB'];
+  selectIds.forEach(id => {
+    const select = document.getElementById(id);
+    GUT_TRAINING_OPTIONS.forEach(carbs => {
+      select.add(new Option(`${carbs} g/hr`, carbs));
+    });
+    // Set defaults based on athlete
+    if (id === 'carbsPerHourB') {
+      select.value = 75; // Kristin default
+    } else {
+      select.value = 85; // Aaron and single athlete default
+    }
+  });
+}
+
+function buildPaceOptions(selectId = 'pace') {
+  const paceSelect = document.getElementById(selectId);
   for (let min = 6; min <= 15; min++) {
     for (let sec = 0; sec < 60; sec += 15) {
       const label = `${min}:${sec.toString().padStart(2,'0')}`;
@@ -34,28 +66,57 @@ function buildPaceOptions() {
   paceSelect.value = 8; // default ~8:00/mi
 }
 
-function buildDistanceOptions() {
-  const whole = document.getElementById('milesWhole');
-  const decimal = document.getElementById('milesDecimal');
+function buildDistanceOptions(wholeId = 'milesWhole', decimalId = 'milesDecimal') {
+  const whole = document.getElementById(wholeId);
+  const decimal = document.getElementById(decimalId);
+  
+  // Clear existing options
+  while (whole.options.length > 0) whole.remove(0);
+  while (decimal.options.length > 0) decimal.remove(0);
+  
   for (let i = 1; i <= 100; i++) whole.add(new Option(i, i));
   for (let d = 0; d <= 9; d++) decimal.add(new Option(d, d/10));
   whole.value = 10;
   decimal.value = 0;
 }
 
-function calculate() {
-  const weight = parseFloat(document.getElementById('weight').value || 0);
-  const unit = document.getElementById('weightUnit').value;
-  const kg = asKg(weight, unit);
-
-  const miles = +document.getElementById('milesWhole').value +
-                +document.getElementById('milesDecimal').value;
+function calculateSingleMode() {
+  const milesWhole = +document.getElementById('milesWhole').value;
+  const milesDecimal = +document.getElementById('milesDecimal').value;
+  const miles = milesWhole + milesDecimal;
   const pace = parseFloat(document.getElementById('pace').value);
-  const durationH = (miles * pace) / 60;
+  const carbsPerHour = parseFloat(document.getElementById('carbsPerHourSingle').value);
 
-  // Carbs
-  const totalCarbs = kg * DEFAULT_FUELING * durationH;
-  const carbsPerHour = durationH > 0 ? totalCarbs / durationH : 0;
+  const durationH = (miles * pace) / 60;
+  const totalCarbs = durationH * carbsPerHour;
+
+  return renderRecipe(totalCarbs, null, null);
+}
+
+function calculateSharedMode() {
+  const milesWholeA = +document.getElementById('milesWholeA').value;
+  const milesDecimalA = +document.getElementById('milesDecimalA').value;
+  const milesA = milesWholeA + milesDecimalA;
+  const paceA = parseFloat(document.getElementById('paceA').value);
+  const carbsPerHourA = parseFloat(document.getElementById('carbsPerHourA').value);
+
+  const milesWholeB = +document.getElementById('milesWholeB').value;
+  const milesDecimalB = +document.getElementById('milesDecimalB').value;
+  const milesB = milesWholeB + milesDecimalB;
+  const paceB = parseFloat(document.getElementById('paceB').value);
+  const carbsPerHourB = parseFloat(document.getElementById('carbsPerHourB').value);
+
+  const durationHA = (milesA * paceA) / 60;
+  const durationHB = (milesB * paceB) / 60;
+
+  const totalCarbsA = durationHA * carbsPerHourA;
+  const totalCarbsB = durationHB * carbsPerHourB;
+  const totalCarbsCombined = totalCarbsA + totalCarbsB;
+
+  return renderRecipe(totalCarbsCombined, {carbs: totalCarbsA}, {carbs: totalCarbsB});
+}
+
+function renderRecipe(totalCarbs, athleteA, athleteB) {
   const malt = totalCarbs * (2/3);
   const fruc = totalCarbs * (1/3);
   const citric = totalCarbs * 0.004;
@@ -73,9 +134,10 @@ function calculate() {
     (citric * VOL_PER_G_CITRIC)
   );
 
-  // Build recipe card with aligned cart column
+  // Build recipe card
   let html = `
     <div class="recipe-section">
+      <h2>Shared Batch Recipe</h2>
       <table class="recipe-table">
         <tr><th>Ingredient</th><th>Amount</th><th></th></tr>
         <tr>
@@ -102,14 +164,52 @@ function calculate() {
         <a href="ingredients.html" target="_blank" rel="noopener noreferrer">
           Why these ingredients?
         </a>
+        <br />
+        <a href="fueling-research.html" target="_blank" rel="noopener noreferrer">
+          Fueling Protocol & Research
+        </a>
       </p>
     </div>
     <div class="pills-container">
       <div class="pill">Total carbs: <strong>${Math.round(totalCarbs)}</strong> g</div>
-      <div class="pill">Carbs/hour: <strong>${Math.round(carbsPerHour)}</strong> g/h</div>
       <div class="pill">Sodium total: <strong>${Math.round(naTargetTotal)}</strong> mg</div>
       <div class="pill">Final gel volume: <strong>${totalVolumeMl}</strong> ml</div>
     </div>
+  `;
+
+  // Per-athlete allocation if in shared mode
+  if (athleteA && athleteB) {
+    const carbsPerMl = totalCarbs / totalVolumeMl;
+    const volumeA = athleteA.carbs / carbsPerMl;
+    const volumeB = athleteB.carbs / carbsPerMl;
+
+    html += `
+      <h2>Per-Athlete Allocation</h2>
+      <div class="allocation-grid">
+        <div class="athlete-allocation">
+          <h3>Aaron</h3>
+          <div class="allocation-pill">
+            <strong>${Math.round(athleteA.carbs)}</strong> g carbs
+          </div>
+          <div class="allocation-pill">
+            <strong>${volumeA.toFixed(0)}</strong> ml
+          </div>
+        </div>
+        <div class="athlete-allocation">
+          <h3>Kristin</h3>
+          <div class="allocation-pill">
+            <strong>${Math.round(athleteB.carbs)}</strong> g carbs
+          </div>
+          <div class="allocation-pill">
+            <strong>${volumeB.toFixed(0)}</strong> ml
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Cost comparison
+  html += `
     <h2>Cost comparison</h2>
     <div class="table-container">
       <table class="table">
@@ -126,9 +226,26 @@ function calculate() {
   document.getElementById('out').innerHTML = html;
 }
 
+function calculate() {
+  const mode = document.getElementById('mode').value;
+  if (mode === 'single') {
+    calculateSingleMode();
+  } else {
+    calculateSharedMode();
+  }
+}
+
 window.onload = () => {
-  buildPaceOptions();
-  buildDistanceOptions();
-  document.getElementById('weight').value = 170;
+  // Initialize single mode
+  buildPaceOptions('pace');
+  buildDistanceOptions('milesWhole', 'milesDecimal');
+  buildCarbsPerHourOptions();
+  
+  // Initialize shared mode athletes
+  buildPaceOptions('paceA');
+  buildPaceOptions('paceB');
+  buildDistanceOptions('milesWholeA', 'milesDecimalA');
+  buildDistanceOptions('milesWholeB', 'milesDecimalB');
+  
   calculate();
 };

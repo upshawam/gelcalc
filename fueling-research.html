@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Marathon Fueling Protocol – DIY Fueling Calculator</title>
+
+  <!-- GitHub-style Markdown CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css">
+
+  <style>
+    body {
+      background: #fff;
+      color: #24292f;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .markdown-body {
+      box-sizing: border-box;
+      min-width: 200px;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      text-decoration: none;
+    }
+    .back-link button {
+      background: #2da44e;
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .back-link button:hover {
+      background: #2c974b;
+    }
+    /* Back to Top Button */
+    #backToTop {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #2da44e;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      transition: background 0.3s ease, opacity 0.3s ease;
+    }
+    #backToTop:hover {
+      background: #1f873d;
+    }
+    #backToTop.show {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+  <div class="markdown-body">
+    <!-- Back button -->
+    <a href="index.html" class="back-link">
+      <button>← Back to Calculator</button>
+    </a>
+
+    <!-- Fueling research markdown content will be injected here -->
+    <div id="content">Loading...</div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button id="backToTop" title="Back to Top">↑</button>
+
+  <!-- Markdown renderer -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    // Configure marked to create IDs for headers
+    const renderer = {
+      heading(token) {
+        // Convert heading text to lowercase slug for ID
+        const slug = token.text
+          .toLowerCase()
+          .trim()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/\s+/g, '-');
+        
+        return `<h${token.depth} id="${slug}">${token.text}</h${token.depth}>`;
+      }
+    };
+    
+    marked.use({ renderer });
+    
+    // Back to Top button functionality
+    const backToTopBtn = document.getElementById('backToTop');
+    
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        backToTopBtn.classList.add('show');
+      } else {
+        backToTopBtn.classList.remove('show');
+      }
+    });
+    
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    // Fetch and render the fueling protocol
+    fetch('FuelingResearch/marathon-fueling-protocol.md')
+      .then(res => res.text())
+      .then(md => {
+        document.getElementById('content').innerHTML = marked.parse(md);
+        
+        // Handle anchor navigation after content is loaded
+        if (window.location.hash) {
+          const target = document.getElementById(window.location.hash.slice(1));
+          if (target) {
+            setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+          }
+        }
+      })
+      .catch(err => {
+        document.getElementById('content').innerHTML = "<p>Could not load fueling protocol document.</p>";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>

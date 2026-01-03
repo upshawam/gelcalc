@@ -1,3 +1,22 @@
+/* Research Footer */
+.research-footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 30px;
+  border-top: 1px solid #ddd;
+}
+
+.research-footer a {
+  color: #2c5530;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.research-footer a:hover {
+  text-decoration: underline;
+  color: #1a3a1d;
+}
 /* Universal box-sizing */
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -45,8 +64,24 @@ button, .btn {
   padding: 8px 15px; font-size: 1rem; border: none; cursor: pointer;
   border-radius: 5px; display: block; margin: 10px auto;
 }
-button:not(.clear-btn), .btn { background: #FFC107 !important; color: black !important; }
+button:not(.clear-btn):not(.preset-btn), .btn { background: #FFC107 !important; color: black !important; }
 .clear-btn { background: #dc3545 !important; color: white !important; }
+.preset-btn { 
+  display: inline-block; margin: 0; padding: 6px 10px; font-size: 0.9rem;
+  background: #555 !important; color: #f0f0f0 !important;
+}
+.preset-btn:hover { background: #666 !important; }
+
+/* Mode sections */
+.mode-section { margin: 10px 0; }
+
+/* Athlete sections */
+.athlete-section {
+  background: #2a2a2a; padding: 12px; border-radius: 8px; margin: 12px 0;
+  border-left: 4px solid #FFC107;
+}
+.athlete-section h3 { margin: 0 0 10px; color: #FFC107; font-size: 1.1rem; }
+.athlete-section .form-row { justify-content: flex-start; }
 
 /* Pills */
 .pills-container {
@@ -103,6 +138,15 @@ button:not(.clear-btn), .btn { background: #FFC107 !important; color: black !imp
 
 /* Small note */
 .small { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 8px; }
+.small a { 
+  color: #0066cc; 
+  text-decoration: underline; 
+  font-weight: 500;
+  cursor: pointer;
+}
+.small a:hover { 
+  color: #0052a3;
+}
 
 /* Responsive */
 @media (max-width: 600px) {
@@ -113,3 +157,18 @@ button:not(.clear-btn), .btn { background: #FFC107 !important; color: black !imp
   #milesWhole { flex: 2; }
   #milesDecimal { flex: 1; }
 }
+
+/* Per-Athlete Allocation */
+.allocation-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px auto;
+}
+.athlete-allocation {
+  background: #2a2a2a; padding: 12px; border-radius: 8px; text-align: center;
+  border: 1px solid #444;
+}
+.athlete-allocation h3 { margin: 0 0 10px; color: #FFC107; }
+.allocation-pill {
+  background: #1e1e1e; border-radius: 6px; padding: 8px; margin: 6px 0;
+  font-size: 0.95rem; border-left: 3px solid #FFC107;
+}
+.allocation-pill strong { color: #FFC107; font-size: 1.2rem; }
