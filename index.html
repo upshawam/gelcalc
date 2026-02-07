@@ -17,6 +17,7 @@
         <select id="mode" onchange="onModeChange()">
           <option value="single">Single</option>
           <option value="shared">Shared</option>
+          <option value="race">Race</option>
         </select>
       </div>
 
@@ -37,6 +38,54 @@
         <div class="form-row">
           <label for="pace">Pace (min/mi)</label>
           <select id="pace"></select>
+        </div>
+      </div>
+
+      <!-- Race Mode -->
+      <div id="raceMode" class="mode-section" style="display:none;">
+        <h3>Race Mode</h3>
+        <div class="form-row">
+          <label for="raceRunner">Runner</label>
+          <select id="raceRunner">
+            <option value="aaron">Aaron</option>
+            <option value="kristin">Kristin</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="raceDistanceWhole">Distance (miles)</label>
+          <select id="raceDistanceWhole"></select>
+          <span>.</span>
+          <select id="raceDistanceDecimal"></select>
+        </div>
+
+        <div class="form-row">
+          <label for="raceFinishTime">Planned finish time (HH:MM)</label>
+          <input id="raceFinishTime" type="text" placeholder="3:10" />
+        </div>
+
+        <div class="form-row">
+          <label for="carbsPerHourRace">Target carbs/hour (g/hr)</label>
+          <select id="carbsPerHourRace"></select>
+        </div>
+
+        <div class="form-row">
+          <label for="paceRace">Pace (min/mi) — optional</label>
+          <select id="paceRace"></select>
+        </div>
+
+        <div class="form-row">
+          <label for="aidStations">Aid stations (miles, comma-separated)</label>
+          <textarea id="aidStations" rows="3">1.5,2.7,3.9,5.4,7.3,8.9,10.4,11.7,13.1,15,16.5,18,19.6,20.7,22.1,23.6,24.8</textarea>
+        </div>
+
+        <div class="form-row">
+          <label for="flaskCount">Flasks to carry</label>
+          <select id="flaskCount">
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
         </div>
       </div>
 

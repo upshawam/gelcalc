@@ -25,6 +25,7 @@ function onModeChange() {
   const mode = document.getElementById('mode').value;
   document.getElementById('singleMode').style.display = mode === 'single' ? 'block' : 'none';
   document.getElementById('sharedMode').style.display = mode === 'shared' ? 'block' : 'none';
+  document.getElementById('raceMode').style.display = mode === 'race' ? 'block' : 'none';
   calculate();
 }
 
@@ -39,7 +40,7 @@ function setPresetB(carbs) {
 }
 
 function buildCarbsPerHourOptions() {
-  const selectIds = ['carbsPerHourSingle', 'carbsPerHourA', 'carbsPerHourB'];
+  const selectIds = ['carbsPerHourSingle', 'carbsPerHourA', 'carbsPerHourB', 'carbsPerHourRace'];
   selectIds.forEach(id => {
     const select = document.getElementById(id);
     GUT_TRAINING_OPTIONS.forEach(carbs => {
@@ -64,6 +65,17 @@ function buildPaceOptions(selectId = 'pace') {
     }
   }
   paceSelect.value = 8; // default ~8:00/mi
+}
+
+// Helper to parse HH:MM string into hours (e.g. "3:10" -> 3.1666...)
+function parseTimeToHours(str) {
+  if (!str || typeof str !== 'string') return null;
+  const parts = str.split(':').map(s => s.trim());
+  if (parts.length === 1) return parseFloat(parts[0]);
+  const h = parseInt(parts[0], 10);
+  const m = parseInt(parts[1], 10) || 0;
+  if (isNaN(h) || isNaN(m)) return null;
+  return h + m/60;
 }
 
 function buildDistanceOptions(wholeId = 'milesWhole', decimalId = 'milesDecimal') {
@@ -231,8 +243,106 @@ function calculate() {
   if (mode === 'single') {
     calculateSingleMode();
   } else {
-    calculateSharedMode();
+    if (mode === 'shared') calculateSharedMode();
+    if (mode === 'race') calculateRaceMode();
   }
+}
+
+function calculateRaceMode() {
+  const whole = +document.getElementById('raceDistanceWhole').value;
+  const dec = +document.getElementById('raceDistanceDecimal').value;
+  const distance = whole + dec;
+
+  // Try planned finish time first
+  const finishStr = document.getElementById('raceFinishTime').value.trim();
+  let durationH = parseTimeToHours(finishStr);
+
+  // If no finish time provided, try pace
+  const paceInput = parseFloat(document.getElementById('paceRace').value);
+  if (!durationH) {
+    if (distance > 0 && paceInput) {
+      durationH = (distance * paceInput) / 60;
+    } else {
+      // fallback: assume 3:10
+      durationH = 3 + 10/60;
+    }
+  }
+
+  const carbsPerHour = parseFloat(document.getElementById('carbsPerHourRace').value) || 100;
+  const totalCarbs = durationH * carbsPerHour;
+
+  // Recompute recipe numbers locally to show race-specific info
+  const malt = totalCarbs * (2/3);
+  const fruc = totalCarbs * (1/3);
+  const citric = totalCarbs * 0.004;
+  const naTargetTotal = (totalCarbs / 30) * NA_PER_30G;
+  const tableG = naTargetTotal / NA_TABLE;
+  const waterMl = Math.round(totalCarbs * ML_PER_G_CARBS);
+  const totalVolumeMl = Math.round(
+    waterMl +
+    (totalCarbs * VOL_PER_G_CARBS) +
+    (tableG * VOL_PER_G_SALT) +
+    (citric * VOL_PER_G_CITRIC)
+  );
+
+  // Render the shared recipe view for race (reuse renderRecipe UI style)
+  renderRecipe(totalCarbs, null, null);
+
+  // Now append race-specific plan
+  const aidText = document.getElementById('aidStations').value;
+  const aidMiles = aidText.split(',').map(s => parseFloat(s)).filter(n => !isNaN(n)).sort((a,b)=>a-b);
+  const paceMinPerMile = paceInput || ((durationH*60) / (distance || 26.2));
+
+  // Dosing cadence: every 15 minutes (flexible)
+  const cadenceMin = 15;
+  const durationMin = Math.round(durationH * 60);
+  let doses = [];
+  for (let t = cadenceMin; t < durationMin; t += cadenceMin) {
+    const doseCarbs = Math.round((carbsPerHour * (cadenceMin/60)));
+    const mileAtDose = (t / paceMinPerMile);
+    // find the next aid station at or after this mile
+    let nextAid = aidMiles.find(m => m >= mileAtDose - 0.2);
+    if (!nextAid) nextAid = aidMiles[aidMiles.length-1] || null;
+    doses.push({ timeMin: t, carbs: doseCarbs, mile: mileAtDose, nextAid });
+  }
+
+  // Water estimates
+  const waterInGel = waterMl; // ml
+  const fluidTargetPerHour = 500; // ml/hr target baseline
+  const totalFluidTarget = Math.round(durationH * fluidTargetPerHour);
+  const additionalWaterNeeded = Math.max(0, totalFluidTarget - waterInGel);
+
+  // Flask distribution
+  const flaskCount = parseInt(document.getElementById('flaskCount').value, 10) || 2;
+  const perFlaskMl = Math.ceil(totalVolumeMl / flaskCount);
+
+  // Build HTML
+  let html = `<div class="race-plan"><h2>Race Plan (Race mode)</h2>`;
+  html += `<p><strong>Planned finish</strong>: ${finishStr || `${Math.floor(durationH)}:${Math.round((durationH%1)*60).toString().padStart(2,'0')}`} &nbsp; <strong>Distance</strong>: ${distance} mi &nbsp; <strong>Target</strong>: ${carbsPerHour} g/hr</p>`;
+
+  html += `<h3>Fueling Schedule (every ${cadenceMin} min)</h3>`;
+  html += `<table class="table"><tr><th>Time</th><th>Mile</th><th>Planned carbs</th><th>Nearest aid (mile)</th><th>Action</th></tr>`;
+  let cumulative = 0;
+  doses.forEach(d => {
+    cumulative += d.carbs;
+    const timeLabel = `${Math.floor(d.timeMin/60)}:${(d.timeMin%60).toString().padStart(2,'0')}`;
+    const aidLabel = d.nextAid ? d.nextAid.toFixed(1) : 'none';
+    const action = d.nextAid ? 'Take gel; chase at aid' : 'Take gel; carry water'
+    html += `<tr><td>${timeLabel}</td><td>${d.mile.toFixed(1)}</td><td>${d.carbs} g</td><td>${aidLabel}</td><td>${action}</td></tr>`;
+  });
+  html += `</table>`;
+
+  html += `<h3>Fluid Plan</h3>`;
+  html += `<p>Water in gel mixture: <strong>${waterInGel} ml</strong><br/>Additional water target (approx): <strong>${additionalWaterNeeded} ml</strong> (≈ ${Math.round(additionalWaterNeeded / Math.max(1,doses.length))} ml per dose from aid stations)</p>`;
+
+  html += `<h3>Flask distribution</h3>`;
+  html += `<p>${flaskCount} flasks, ~${perFlaskMl} ml each (total gel volume ${totalVolumeMl} ml)</p>`;
+
+  html += `</div>`;
+
+  // Append to existing output
+  const out = document.getElementById('out');
+  out.innerHTML = out.innerHTML + html;
 }
 
 window.onload = () => {
@@ -246,6 +356,9 @@ window.onload = () => {
   buildPaceOptions('paceB');
   buildDistanceOptions('milesWholeA', 'milesDecimalA');
   buildDistanceOptions('milesWholeB', 'milesDecimalB');
+  // Initialize race mode controls
+  buildPaceOptions('paceRace');
+  buildDistanceOptions('raceDistanceWhole', 'raceDistanceDecimal');
   
   calculate();
 };
