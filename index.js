@@ -257,15 +257,9 @@ function calculateRaceMode() {
   const finishStr = document.getElementById('raceFinishTime').value.trim();
   let durationH = parseTimeToHours(finishStr);
 
-  // If no finish time provided, try pace
-  const paceInput = parseFloat(document.getElementById('paceRace').value);
+  // If no finish time provided, fall back to 3:10
   if (!durationH) {
-    if (distance > 0 && paceInput) {
-      durationH = (distance * paceInput) / 60;
-    } else {
-      // fallback: assume 3:10
-      durationH = 3 + 10/60;
-    }
+    durationH = 3 + 10/60;
   }
 
   const carbsPerHour = parseFloat(document.getElementById('carbsPerHourRace').value) || 100;
@@ -291,7 +285,7 @@ function calculateRaceMode() {
   // Now append race-specific plan
   const aidText = document.getElementById('aidStations').value;
   const aidMiles = aidText.split(',').map(s => parseFloat(s)).filter(n => !isNaN(n)).sort((a,b)=>a-b);
-  const paceMinPerMile = paceInput || ((durationH*60) / (distance || 26.2));
+  const paceMinPerMile = (durationH * 60) / (distance || 26.2);
 
   // Dosing cadence: every 15 minutes (flexible)
   const cadenceMin = 15;
@@ -357,7 +351,6 @@ window.onload = () => {
   buildDistanceOptions('milesWholeA', 'milesDecimalA');
   buildDistanceOptions('milesWholeB', 'milesDecimalB');
   // Initialize race mode controls
-  buildPaceOptions('paceRace');
   buildDistanceOptions('raceDistanceWhole', 'raceDistanceDecimal');
   
   calculate();

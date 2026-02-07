@@ -71,21 +71,13 @@
         </div>
 
         <div class="form-row">
-          <label for="paceRace">Pace (min/mi) — optional</label>
-          <select id="paceRace"></select>
-        </div>
-
-        <div class="form-row">
           <label for="aidStations">Aid stations (miles, comma-separated)</label>
           <textarea id="aidStations" rows="3">1.5,2.7,3.9,5.4,7.3,8.9,10.4,11.7,13.1,15,16.5,18,19.6,20.7,22.1,23.6,24.8</textarea>
         </div>
 
         <div class="form-row">
           <label for="flaskCount">Flasks to carry</label>
-          <select id="flaskCount">
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
+          <input id="flaskCount" type="number" min="1" max="6" step="1" value="2" />
         </div>
       </div>
 
