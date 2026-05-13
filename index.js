@@ -149,7 +149,6 @@ function renderRecipe(totalCarbs, athleteA, athleteB) {
   // Build recipe card
   let html = `
     <div class="recipe-section">
-      <h2>Shared Batch Recipe</h2>
       <table class="recipe-table">
         <tr><th>Ingredient</th><th>Amount</th><th></th></tr>
         <tr>
@@ -169,6 +168,7 @@ function renderRecipe(totalCarbs, athleteA, athleteB) {
         </tr>
         <tr><td>Table Salt</td><td>${tableG.toFixed(2)} g</td><td></td></tr>
         <tr><td>Water</td><td>${waterMl} ml</td><td></td></tr>
+        <tr style="border-top: 2px solid #ddd; font-weight: 600;"><td>Pre-mixed Dry Ingredients</td><td>${Math.round(malt + fruc + citric + tableG)} g</td><td></td></tr>
       </table>
 
       <!-- Why these ingredients link -->
@@ -199,7 +199,7 @@ function renderRecipe(totalCarbs, athleteA, athleteB) {
       <h2>Per-Athlete Allocation</h2>
       <div class="allocation-grid">
         <div class="athlete-allocation">
-          <h3>Aaron</h3>
+          <h3>Athlete A</h3>
           <div class="allocation-pill">
             <strong>${Math.round(athleteA.carbs)}</strong> g carbs
           </div>
@@ -208,7 +208,7 @@ function renderRecipe(totalCarbs, athleteA, athleteB) {
           </div>
         </div>
         <div class="athlete-allocation">
-          <h3>Kristin</h3>
+          <h3>Athlete B</h3>
           <div class="allocation-pill">
             <strong>${Math.round(athleteB.carbs)}</strong> g carbs
           </div>
