@@ -17,6 +17,7 @@
         <select id="mode" onchange="onModeChange()">
           <option value="single">Single</option>
           <option value="shared">Shared</option>
+          <option value="bulk">Bulk</option>
         </select>
       </div>
 
@@ -40,43 +41,22 @@
         </div>
       </div>
 
-      <!-- Race Mode -->
-      <div id="raceMode" class="mode-section" style="display:none;">
-        <h3>Race Mode</h3>
+      <!-- Bulk Mode -->
+      <div id="bulkMode" class="mode-section" style="display:none;">
+        <h3>Bulk Mode</h3>
         <div class="form-row">
-          <label for="raceRunner">Runner</label>
-          <select id="raceRunner">
-            <option value="aaron">Aaron</option>
-            <option value="kristin">Kristin</option>
-            <option value="custom">Custom</option>
+          <label for="bulkBasis">Start with</label>
+          <select id="bulkBasis" onchange="calculate()">
+            <option value="malt">Maltodextrin</option>
+            <option value="fruc">Fructose</option>
+            <option value="carbs">Total Carbs</option>
+            <option value="dry">Pre-mixed Dry Ingredients</option>
           </select>
         </div>
 
         <div class="form-row">
-          <label for="raceDistanceWhole">Distance (miles)</label>
-          <select id="raceDistanceWhole"></select>
-          <span>.</span>
-          <select id="raceDistanceDecimal"></select>
-        </div>
-
-        <div class="form-row">
-          <label for="raceFinishTime">Planned finish time (HH:MM)</label>
-          <input id="raceFinishTime" type="text" placeholder="3:10" />
-        </div>
-
-        <div class="form-row">
-          <label for="carbsPerHourRace">Target carbs/hour (g/hr)</label>
-          <select id="carbsPerHourRace"></select>
-        </div>
-
-        <div class="form-row">
-          <label for="aidStations">Aid stations (miles, comma-separated)</label>
-          <textarea id="aidStations" rows="3">1.5,2.7,3.9,5.4,7.3,8.9,10.4,11.7,13.1,15,16.5,18,19.6,20.7,22.1,23.6,24.8</textarea>
-        </div>
-
-        <div class="form-row">
-          <label for="flaskCount">Flasks to carry</label>
-          <input id="flaskCount" type="number" min="1" max="6" step="1" value="2" />
+          <label for="bulkAmount">Amount (g)</label>
+          <input id="bulkAmount" type="number" min="1" step="1" value="1000" oninput="calculate()" />
         </div>
       </div>
 
@@ -133,6 +113,6 @@
   </div>
 
   <!-- Add a version string to force browsers to fetch the latest file -->
-  <script src="index.js?v=1.0.2"></script>
+  <script src="index.js?v=1.0.3"></script>
 </body>
 </html>
